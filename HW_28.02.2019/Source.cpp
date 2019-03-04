@@ -21,8 +21,8 @@ double func2(double x) {
 }
 void coordinates(double a, double b, double(*f)(double)) {
 	if (a > b) swap(a, b);
-	double otrezok = (b-a) / 10;
-	for (double i = a; i < b; i += otrezok)
+	double otrezok = (b-a) / (10-1);
+	for (double i = a; i <= b; i += otrezok)
 	{
 		cout << "(" << i << "; " << f(i) << ")" << endl;
 	}
@@ -47,17 +47,61 @@ void printArray(const int *const a, int n) {
 		cout << a[i] << " ";
 	cout << endl;
 }
-void addNum(int *&a, int&n, int NN) {
-
-}
-
-
-
-
-
 void deleteArray(int *&a) {
 	delete[] a;
 }
+void addNum(int *&a, int&n, int NN) {
+	int *tmp = new int[n + 1];
+	for (int i = 0; i < n; i++)
+		tmp[i] = a[i];
+
+	tmp[n] = NN;
+	delete[] a;
+	a = tmp;
+	n++;
+}
+int* searchNum(int *a, int n, int NN) {
+	int *tmp = a;
+	for (int *p = a; p < a + n; p++)
+	{
+		if (*p == NN)
+		{
+		tmp = p;
+			// cout << "This number is under the index: " << p - a << endl;
+			break;
+		}
+		else if (p == (a + n - 1))
+		{
+			cout << "There is no such a number" << endl;
+			tmp = nullptr;
+		}
+	}
+	return tmp;
+}
+void eraseNum(int*&a, int &n, int NN) {
+	int *find_p = searchNum(a, n, NN);
+	if (find_p == 0) return;
+	
+	int *tmp = new int[n - 1];
+	int *tmp_p = tmp;
+	
+	for (int *p = a; p < a + n; p++)
+	{
+		if (*p != NN)
+		{
+			//*tmp++ = *p; ////this way is an error
+			*tmp_p = *p; // but this one works. Why?
+			tmp_p++;
+		}
+	}
+
+	delete[] a;
+	a = tmp;
+	tmp_p = 0;
+	find_p = 0;
+	n--;
+}
+
 
 int main()
 {
@@ -78,22 +122,106 @@ int main()
 		{
 			double(*fs[2])(double) = { func1, func2 };
 			double a = 0;
-			double b = 10;
+			double b = 17.5;
 
 			coordinates(a, b, fs[0]);
 			cout << endl;
 			coordinates(a, b, fs[1]);
 		}
 		break;
-		case 2:
+		case 2: // test
 		{
+			int *a;
+			int n = 5;
 
+			createArray(a, n);
+			fillArray(a, n);
+			printArray(a, n);
+
+			addNum(a, n, 335577);
+			printArray(a, n);
+			addNum(a, n, 888888);
+			printArray(a, n);
+
+			int *b = searchNum(a, n, 335577);
+			cout << b << "	" << "This number is under the index: " << b - a << endl;
+			b = searchNum(a, n, 123456);
+			cout << b << endl << endl;
+
+			eraseNum(a, n, 123456);
+			printArray(a, n);
+
+			addNum(a, n, 123456);
+			printArray(a, n);
+
+			eraseNum(a, n, 335577);
+			printArray(a, n);
+
+			//deleteArray(a); //тоже ошибку выдает
+			a = nullptr;
 		}
 		break;
-		default:
+		case 3: // меню для телефонного справочника
+		{
+
+			int *a;
+			int n = 0;
+
+			createArray(a, n);
+			fillArray(a, n);
+			printArray(a, n);
+
+			int choice;
+			bool f = true;
+			while (f)
+			{
+				cout << "Выберите действие:" << endl;
+				cout << "1 - добавление номера в справочник" << endl;
+				cout << "2 - поиск телефона по номеру" << endl;
+				cout << "3 - удаление указанного телефона из справочника" << endl;
+				cout << "0 - выход" << endl << endl;
+
+				cin >> choice;
+				switch (choice)
+				{
+				case 1:
+				{
+					addNum(a, n, 335577);
+					printArray(a, n);
+					addNum(a, n, 888888);
+					printArray(a, n);
+				}
+				break;
+				case 2: //error
+				{
+					int *b = searchNum(a, n, 335577);
+					cout << b << "	" << "This number is under the index: " << b - a << endl;
+					b = searchNum(a, n, 123456);
+					cout << b << endl << endl;
+				}
+				break;
+				case 3://error
+				{
+					eraseNum(a, n, 123456);
+					printArray(a, n);
+					eraseNum(a, n, 335577);
+					printArray(a, n);
+				}
+				break;
+				case 0:
+				{
+					f = false;
+				}
+				break;
+				}
+				a = nullptr;
+			}
+		}
+			break;
+			default:
 			cout << "нет такой задачи" << endl << endl;
 		}
+		}
+		system("pause");
+		return 0;
 	}
-	system("pause");
-	return 0;
-}
