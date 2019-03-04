@@ -158,6 +158,7 @@ int main()
 			printArray(a, n);
 
 			//deleteArray(a); //тоже ошибку выдает
+			delete[] a;
 			a = nullptr;
 		}
 		break;
@@ -214,6 +215,7 @@ int main()
 				}
 				break;
 				}
+				delete[] a;
 				a = nullptr;
 			}
 		}
